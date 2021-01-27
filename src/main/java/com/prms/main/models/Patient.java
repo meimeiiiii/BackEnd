@@ -110,10 +110,9 @@ public class Patient {
 		this.status = status;
 	}
 
-	public Patient(long patientId, String firstName, String middleName, String lastName, String email, String contactNumber,
+	public Patient(String firstName, String middleName, String lastName, String email, String contactNumber,
 			Date birthdate, String gender, int status) {
 		super();
-		this.patientId = patientId;
 		this.firstName = firstName;
 		this.middleName = middleName;
 		this.lastName = lastName;

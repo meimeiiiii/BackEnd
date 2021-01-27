@@ -6,7 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "patients")
+@Table(name = "address")
 public class Address {
 	
 	@Id
@@ -19,7 +19,17 @@ public class Address {
 	@Column(name = "address")
 	private String address;
 
-    public long getAddressId() {
+//	public Object getAddress;
+
+//    public Address(String address2) {
+//		// TODO Auto-generated constructor stub
+//	}
+
+//	public Address(String address2) {
+//		// TODO Auto-generated constructor stub
+//	}
+
+	public long getAddressId() {
 		return addressId;
 	}
 
@@ -42,11 +52,21 @@ public class Address {
 	public void setAddress(String address) {
 		this.address = address;
 	}
-
-	public Address(long addressId, long patientId, String address) {
-		this.addressId = addressId;
-		this.patientId = patientId;
+	
+	public Address(String address, long patientId)
+	{
+		super();
 		this.address = address;
+		this.patientId = patientId;
 	}
+	
+	public Address()
+	{
+		
+	}
+
+	
+	
+
 }
 	
