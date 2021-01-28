@@ -90,7 +90,9 @@ public class PatientController {
     AddressRepository AddressRepository;
     PatientRepository PatientRepository;
    
-    @GetMapping("/getAllPatients")
+
+    @GetMapping("getAllPatients")
+
     public List<Patient> all() {
        return pService.listAll();
     }

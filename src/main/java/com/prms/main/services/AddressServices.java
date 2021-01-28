@@ -24,6 +24,12 @@ public class AddressServices {
         return repo.findAll();
     }
     
+    public List<Address> getNewAddress()
+    {
+    	List<Address> addressList = (List<Address>) repo.findNewAddress();
+    	return addressList;
+    }
+    
 //    public String saveNewAddress(AddressRequest request)
 //    {
 //    	Address address = new Address();

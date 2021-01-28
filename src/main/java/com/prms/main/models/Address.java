@@ -4,9 +4,10 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 @Entity
-@Table(name = "address")
+@Table(name = "address", uniqueConstraints={@UniqueConstraint(columnNames ={"address"})})
 public class Address {
 	
 	@Id
@@ -16,18 +17,9 @@ public class Address {
 	@Column(name = "p_id")
 	private long patientId;
 	
-	@Column(name = "address")
+	@Column(name = "address" , unique=true)
 	private String address;
 
-//	public Object getAddress;
-
-//    public Address(String address2) {
-//		// TODO Auto-generated constructor stub
-//	}
-
-//	public Address(String address2) {
-//		// TODO Auto-generated constructor stub
-//	}
 
 	public long getAddressId() {
 		return addressId;
