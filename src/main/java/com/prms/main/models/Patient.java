@@ -39,7 +39,9 @@ public class Patient {
 	private String gender;
 	
 	@Column(name = "status")
-	private int  status;
+
+	private int status;
+	
 
 
 	public long getPatientId() {
@@ -115,18 +117,22 @@ public class Patient {
 		this.status = status;
 	}
 
-	public String getAddress() {
-		return address;
-	}
+
+	
+
+
 
 	public void setAddress(String address) {
 		this.address = address;
-	}
-	
-	
+		}
+		public String getAddress() {
+		return address;
+		}
+
 
 	public Patient(String firstName, String middleName, String lastName, String email, String contactNumber,
-			Date birthdate, String gender, int status) {
+			Date birthdate, String gender, int status, String address) {
+
 		super();
 		this.firstName = firstName;
 		this.middleName = middleName;
@@ -136,6 +142,7 @@ public class Patient {
 		this.birthdate = birthdate;
 		this.gender = gender;
 		this.status = status;
+		this.address = address;
 	}
 	public Patient() {
 		
