@@ -23,5 +23,7 @@ public class PatientServices {
     public List<Patient> listAll() {
         return repo.findAll();
     }
+    
+    
      
 }
