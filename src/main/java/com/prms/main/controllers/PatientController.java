@@ -31,7 +31,6 @@ import com.prms.main.services.PatientServices;
 @RestController
 @CrossOrigin(origins = "*")
 @RequestMapping("/patients")
-@CrossOrigin(origins = "*")
 public class PatientController {
 	
     private PatientServices pService;
