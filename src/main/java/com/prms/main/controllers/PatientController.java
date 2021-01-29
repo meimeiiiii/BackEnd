@@ -43,7 +43,7 @@ import com.prms.main.repositories.PatientRepository;
 import com.prms.main.services.AddressServices;
 import com.prms.main.services.PatientServices;
 @RestController
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "*",  allowedHeaders = "*")
 @RequestMapping("/patients")
 public class PatientController {
 	
