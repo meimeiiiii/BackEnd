@@ -24,6 +24,7 @@ public class PatientServices {
         return repo.findAll();
     }
 
+
     public List<Patient> getActivated() {
         List<Patient> patients = (List<Patient>) repo.findAllActivated();
         return patients;
@@ -33,5 +34,6 @@ public class PatientServices {
         List<Patient> patients = (List<Patient>) repo.findAllDeactivated();
         return patients;
     }
+
      
 }

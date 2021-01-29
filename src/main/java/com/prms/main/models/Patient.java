@@ -26,6 +26,9 @@ public class Patient {
 	@Column(name = "email")
 	private String email;
 	
+	@Column(name = "address")
+	private String address;
+	
 	@Column(name = "contact_number")
 	private String contactNumber;
 	
@@ -34,12 +37,12 @@ public class Patient {
 	
 	@Column(name = "gender")
 	private String gender;
-
+	
 	@Column(name = "status")
+
 	private int status;
 	
-	@Column(name = "address")
-	private String address;
+
 
 	public long getPatientId() {
 		return patientId;
@@ -105,6 +108,7 @@ public class Patient {
 		this.gender = gender;
 	}
 
+
 	public int getStatus() {
 		return status;
 	}
@@ -113,21 +117,23 @@ public class Patient {
 		this.status = status;
 	}
 
+
 	
 	public void setAddress(String address) {
 		this.address = address;
 	}
 	
 	public String getAddress() {
-		return address;
+		return this.address;
 	}
+
+
+
+
+
 
 	public Patient(String firstName, String middleName, String lastName, String email, String contactNumber,
 			Date birthdate, String gender, int status, String address) {
-
-
-
-	
 
 		super();
 		this.firstName = firstName;

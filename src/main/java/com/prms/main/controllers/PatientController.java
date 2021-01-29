@@ -1,29 +1,43 @@
 package com.prms.main.controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
+
 import org.springframework.http.ResponseEntity;
 // import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import org.springframework.web.bind.annotation.PutMapping;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 import com.prms.main.exporters.ExcelExporter;
+import com.prms.main.exporters.FilterReport;
 import com.prms.main.models.Address;
+import com.prms.main.models.Filter;
 import com.prms.main.models.Patient;
+
 import com.prms.main.repositories.AddressRepository;
 import com.prms.main.repositories.PatientRepository;
 import com.prms.main.services.AddressServices;
@@ -39,6 +53,7 @@ public class PatientController {
     @Autowired
 	PatientRepository patientRepository;
     
+
     @Autowired
     public PatientController(PatientServices pService, AddressServices aService) {
         this.pService = pService;
@@ -74,7 +89,9 @@ public class PatientController {
     AddressRepository AddressRepository;
     PatientRepository PatientRepository;
    
-    @GetMapping()
+
+    @GetMapping("getAllPatients")
+
     public List<Patient> all() {
        return pService.listAll();
     }
@@ -136,26 +153,55 @@ public class PatientController {
 //     
    
 
-    @GetMapping("/export")
-    public void exportToExcel(HttpServletResponse response) throws IOException {
-        try {
-            response.setContentType("application/octet-stream");
+     private List<Patient> filter(Filter filter){
+    	 List<Patient> listPatient = pService.listAll();
+    	 return new FilterReport(listPatient,filter).filter();
+     }
+     
+     
+     @PostMapping("/export")
+     public ResponseEntity<ByteArrayResource> getFilter2(@RequestBody Filter filter) {
+ 		try {
+ 			Filter _filter = new Filter(filter.isFilterValue(), filter.isStatus(), filter.isGender(), filter.isBirthdate(),
+ 					filter.isMale(),filter.isFemale(), filter.isOthers(), filter.getStatusValue(), filter.getStartDate(), filter.getEndDate());
+ 			
+ 			List<Patient> listPatient = filter(_filter);
+ 	    	List<Address> listAddress = aService.listAll();
+ 	    	
+ 	    	ExcelExporter excelExproter = new ExcelExporter(listPatient,listAddress);
+	         
+	        ByteArrayOutputStream baos = excelExproter.export();
+ 	         
+ 	        DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+ 	        String filename = "PatientRecords_" + df.format(new Date());
+ 	        
+ 	        HttpHeaders headers = new HttpHeaders();
+ 	        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
+ 	        headers.add("Pragma", "no-cache");
+ 	        headers.add("Expires", "0");
+ 	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; " + filename + ".xslx");
 
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
-            String filename = "PatientRecords_" + df.format(LocalDateTime.now());
+ 	       return ResponseEntity.ok()
+ 	                .headers(headers)
+ 	                .contentLength(baos.size())
+ 	                .contentType(MediaType.parseMediaType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"))
+ 	                .body(new ByteArrayResource(baos.toByteArray()));
+ 		} catch (Exception e) {
+ 	 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+ 	 	}
+ 	 }   
+     
+    @PutMapping("/update/{id}")
+	public ResponseEntity<Patient> updatePatient(@PathVariable("id") long id, @RequestBody Patient patient) {
+		Optional<Patient> patientData = patientRepository.findById(id);
 
-            String headerKey = "Content-Disposition";
-            String headerValue = "attachment; filename=" + filename + ".xlsx";
-            response.setHeader(headerKey, headerValue);
-
-            List<Patient> listPatient = pService.listAll();
-            List<Address> listAddress = aService.listAll();
-
-            ExcelExporter excelExporter = new ExcelExporter(listPatient, listAddress);
-
-            excelExporter.export(response);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+		if (patientData.isPresent()) {
+			Patient _patient = patientData.get();
+			_patient.setStatus(patient.getStatus());
+			return new ResponseEntity<>(patientRepository.save(_patient), HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+	}
+    
 }
