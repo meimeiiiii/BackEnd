@@ -161,7 +161,7 @@ public class PatientController {
      
      
      @PostMapping("/export")
-     public ResponseEntity<ByteArrayResource> getFilter2(@RequestBody Filter filter) {
+     public ResponseEntity<ByteArrayResource> filterAndExport(@RequestBody Filter filter) {
  		try {
  			Filter _filter = new Filter(filter.isFilterValue(), filter.isStatus(), filter.isGender(), filter.isBirthdate(),
  					filter.isMale(),filter.isFemale(), filter.isOthers(), filter.getStatusValue(), filter.getStartDate(), filter.getEndDate());
@@ -180,7 +180,7 @@ public class PatientController {
  	        headers.add("Cache-Control", "no-cache, no-store, must-revalidate");
  	        headers.add("Pragma", "no-cache");
  	        headers.add("Expires", "0");
- 	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; " + filename + ".xslx");
+ 	        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; " + filename + ".xlsx");
 
  	       return ResponseEntity.ok()
  	                .headers(headers)
