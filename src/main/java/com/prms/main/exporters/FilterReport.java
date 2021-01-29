@@ -86,7 +86,7 @@ public class FilterReport {
 			
 			for(Patient p : patients) {
 				for (String g : genderValues) {
-					if(g.equals(p.getGender())) {
+					if(g.equalsIgnoreCase(p.getGender())) {
 						patientsTemp.add(p);
 					}
 				}
