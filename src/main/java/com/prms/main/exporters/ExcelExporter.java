@@ -71,7 +71,7 @@ public class ExcelExporter{
 			Row r = ws.createRow(rCount);
 		
 			createCell(r, 0, p.getPatientId(), s1);   
-			createCell(r, 1, p.getStatus()==1 ? "active":"inactive", s1);   
+			createCell(r, 1, p.getStatus()==1 ? "activated":"deactivated", s1);   
 			createCell(r, 2, p.getLastName(), s1);   
 			createCell(r, 3, p.getFirstName(), s1);   
 			createCell(r, 4, p.getMiddleName(), s1);   

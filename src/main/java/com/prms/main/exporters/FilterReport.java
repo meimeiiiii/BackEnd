@@ -34,7 +34,7 @@ public class FilterReport {
 				this.male = filter.isMale();
 				this.female = filter.isFemale();
 				this.others = filter.isOthers();
-				this.statusValue = filter.getStatusValue().equals("active") ? 1:0;
+				this.statusValue = filter.getStatusValue().equals("activated") ? 1:0;
 				try {
 					this.dateStart = new SimpleDateFormat("yyyy-MM-dd").parse(filter.getStartDate());
 					this.dateEnd = new SimpleDateFormat("yyyy-MM-dd").parse(filter.getEndDate());
