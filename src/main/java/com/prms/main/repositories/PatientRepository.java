@@ -17,5 +17,10 @@ public interface PatientRepository extends JpaRepository<Patient, Long> {
     
     @Query(value="Select * from Patients where status = 0",nativeQuery=true)
     List<Patient> findAllDeactivated(); 
-
+    
+    @Query(value="Select * from Patients where status = 1 && email = ?",nativeQuery=true)
+    List<Patient> findEmailDuplicate(String email); 
+    
+    @Query(value="Select * from Patients where status = 1 && contact_Number = ?",nativeQuery=true)
+    List<Patient> findContactNumDuplicate(String contactNumber); 
 }

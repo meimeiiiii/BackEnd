@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -104,8 +105,8 @@ public class PatientController {
   		
    }
     
-    @GetMapping("/getAllAddressByID/{p_id}")
-    public List<Address> getAllAddressByID(@PathVariable("p_id") long p_id)
+    @GetMapping("/getAllAddressByID")
+    public List<Address> getAllAddressByID(@RequestParam("id") long p_id)
     {
     	List<Address> addressList = addressRepository.getAllAddressByID(p_id);
     	return addressList;
@@ -212,5 +213,46 @@ public class PatientController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 	}
+    
+    @PostMapping("/updatePatientRecord")
+   	public ResponseEntity<Patient> updatePatientRecord( @RequestBody Patient patient) {
+   		Optional<Patient> patientData = patientRepository.findById(patient.getPatientId());
+   		
+   		boolean duplicateEmail = false;
+   		boolean duplicateContactNum = false;
+   		try {
+	   		if (patientData.isPresent()) {
+	   			Patient _patient = patientData.get();
+	   			if(!patientRepository.findEmailDuplicate(patient.getEmail()).isEmpty() 
+	   			&& !_patient.getEmail().equals(patient.getEmail())) {
+	   				duplicateEmail = true;
+	   			}
+	   			if(!patientRepository.findContactNumDuplicate(patient.getContactNumber()).isEmpty()
+	   			&& !_patient.getContactNumber().equals(patient.getContactNumber())) {
+	   				duplicateContactNum = true;
+	   			}
+	   			
+	   			if(duplicateEmail && duplicateContactNum) {
+	   				patient.setEmail("DUPLICATE");
+	   				patient.setContactNumber("DUPLICATE");
+	   				return new ResponseEntity<>(patient, HttpStatus.FOUND);
+	   			}else if(duplicateEmail) {
+	   				patient.setEmail("DUPLICATE");
+	   				return new ResponseEntity<>(patient, HttpStatus.FOUND);
+	   			}else if(duplicateContactNum) {
+	   				patient.setContactNumber("DUPLICATE");
+	   				return new ResponseEntity<>(patient, HttpStatus.FOUND);
+	   			}else if(_patient == patient){
+	   				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	   			}else {
+	   				return new ResponseEntity<>(patientRepository.save(patient), HttpStatus.OK);
+	   			}
+	   		} else {
+	   			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	   		}
+   		} catch (Exception e) {
+ 	 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+ 	 	}
+   	}
     
 }
