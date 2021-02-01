@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
@@ -104,8 +105,8 @@ public class PatientController {
   		
    }
     
-    @GetMapping("/getAllAddressByID/{p_id}")
-    public List<Address> getAllAddressByID(@PathVariable("p_id") long p_id)
+    @GetMapping("/getAllAddressByID")
+    public List<Address> getAllAddressByID(@RequestParam("id") long p_id)
     {
     	List<Address> addressList = addressRepository.getAllAddressByID(p_id);
     	return addressList;
