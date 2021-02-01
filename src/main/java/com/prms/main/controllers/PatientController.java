@@ -214,4 +214,45 @@ public class PatientController {
 		}
 	}
     
+    @PostMapping("/updatePatientRecord")
+   	public ResponseEntity<Patient> updatePatientRecord( @RequestBody Patient patient) {
+   		Optional<Patient> patientData = patientRepository.findById(patient.getPatientId());
+   		
+   		boolean duplicateEmail = false;
+   		boolean duplicateContactNum = false;
+   		try {
+	   		if (patientData.isPresent()) {
+	   			Patient _patient = patientData.get();
+	   			if(!patientRepository.findEmailDuplicate(patient.getEmail()).isEmpty() 
+	   			&& !_patient.getEmail().equals(patient.getEmail())) {
+	   				duplicateEmail = true;
+	   			}
+	   			if(!patientRepository.findContactNumDuplicate(patient.getContactNumber()).isEmpty()
+	   			&& !_patient.getContactNumber().equals(patient.getContactNumber())) {
+	   				duplicateContactNum = true;
+	   			}
+	   			
+	   			if(duplicateEmail && duplicateContactNum) {
+	   				patient.setEmail("DUPLICATE");
+	   				patient.setContactNumber("DUPLICATE");
+	   				return new ResponseEntity<>(patient, HttpStatus.FOUND);
+	   			}else if(duplicateEmail) {
+	   				patient.setEmail("DUPLICATE");
+	   				return new ResponseEntity<>(patient, HttpStatus.FOUND);
+	   			}else if(duplicateContactNum) {
+	   				patient.setContactNumber("DUPLICATE");
+	   				return new ResponseEntity<>(patient, HttpStatus.FOUND);
+	   			}else if(_patient == patient){
+	   				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	   			}else {
+	   				return new ResponseEntity<>(patientRepository.save(patient), HttpStatus.OK);
+	   			}
+	   		} else {
+	   			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+	   		}
+   		} catch (Exception e) {
+ 	 		return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+ 	 	}
+   	}
+    
 }
