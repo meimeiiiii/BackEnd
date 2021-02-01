@@ -53,6 +53,8 @@ public class PatientController {
     
     @Autowired
 	PatientRepository patientRepository;
+    @Autowired
+    AddressRepository addressRepository;
     
 
     @Autowired
@@ -61,7 +63,13 @@ public class PatientController {
         this.aService = aService;
     }
     
-
+    
+    @GetMapping("/getAllPatients")
+    public List<Patient> getPatients(){
+        return (List<Patient>) pService.listAll();
+    }
+    
+    
     @GetMapping("/getPatient/{p_id}")
     public ResponseEntity<Patient> getPatientById(@PathVariable("p_id") long p_id){
     	Optional<Patient> patientData = patientRepository.findById(p_id);
@@ -70,6 +78,37 @@ public class PatientController {
 		} else {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
+    }
+    
+    
+   
+    
+    @GetMapping("/getAllAddress")
+    public List<Address> getAddresses(){
+        return (List<Address>) aService.listAll();
+    }
+    
+    
+  
+    @GetMapping("/getAddress/{p_id}")
+    public ResponseEntity<Address> getAddressById(@PathVariable("p_id") long p_id)
+    {
+    	Optional <Address> addressData = addressRepository.findById(p_id);
+    	if(addressData.isPresent())
+    	{
+    		return new ResponseEntity<>(addressData.get(), HttpStatus.OK);
+    	}
+    	else {
+    		return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    	}
+  		
+   }
+    
+    @GetMapping("/getAllAddressByID/{p_id}")
+    public List<Address> getAllAddressByID(@PathVariable("p_id") long p_id)
+    {
+    	List<Address> addressList = addressRepository.getAllAddressByID(p_id);
+    	return addressList;
     }
     
     @PostMapping("/addPatients")
@@ -85,19 +124,8 @@ public class PatientController {
 	}
     
 
-    
-    @Autowired
-    AddressRepository AddressRepository;
-    PatientRepository PatientRepository;
+
    
-
-    @GetMapping("getAllPatients")
-
-    public List<Patient> all() {
-       return pService.listAll();
-    }
-    
-
     @GetMapping("/activated")
     public List<Patient> activatedPatients() {
        return pService.getActivated();
@@ -108,20 +136,20 @@ public class PatientController {
     }
     
     
-
-
-    //medyo redundant pero xge,,
-     @GetMapping("/getAllAddress")
-     public List<Address> getAddresses(){
-         return (List<Address>) aService.listAll();
-     }
-     
+//    @GetMapping("/addressList")
+//    public List<Address> findNewAddress()
+//    {
+//    	return aService.getNewAddress();
+//    }
+//   
+    
+    
      
      @PostMapping("/addAddress")
      public ResponseEntity<Address> addAddress(@RequestBody Address address)
      {
     	 try {
-    		 Address _address = AddressRepository
+    		 Address _address = addressRepository
     				 .save(new Address(address.getAddress(), address.getPatientId()));
     		 return new ResponseEntity<>(_address, HttpStatus.CREATED);
     	 }
@@ -133,26 +161,6 @@ public class PatientController {
 
      }
      
-     
-//     @PostMapping("/addPatients")
-//     public ResponseEntity<Patient> addPatient(@RequestBody Patient patient) {​​
-//     try {​​
-//     Patient _patient = patientRepository
-//     .save(new Patient(patient.getFirstName(), patient.getMiddleName(), patient.getLastName(),
-//     patient.getEmail(),patient.getContactNumber(),patient.getBirthdate(),patient.getGender(),patient.getStatus()));
-//     return new ResponseEntity<>(_patient, HttpStatus.CREATED);
-//     }​​ catch (Exception e) {​​
-//     return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-//     }​​
-//     }
-     
-//     @PostMapping("/addPatients")
-//     public ResponseEntity<Patient> addPatient(@RequestBody Patient patient)​​
-//     {
-//    	 Patient _patient = PatientRepository;
-//     }
-//     
-   
 
      private List<Patient> filter(Filter filter){
     	 List<Patient> listPatient = pService.listAll();
